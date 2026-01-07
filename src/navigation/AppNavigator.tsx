@@ -12,6 +12,13 @@ import { PermissionsScreen } from '../screens/PermissionsScreen';
 import { GoalSetupWizard } from '../screens/GoalSetupWizard';
 import { CategorizationSummary } from '../screens/CategorizationSummary';
 import { CountdownScreen } from '../screens/CountdownScreen';
+import { ProfileScreen } from '../screens/ProfileScreen';
+import { AddGoalsScreen } from '../screens/AddGoalsScreen';
+import { SettingsScreen } from '../screens/SettingsScreen';
+import { AboutScreen } from '../screens/AboutScreen';
+import { EditGoalScreen } from '../screens/EditGoalScreen';
+import { ExportScreen } from '../screens/ExportScreen';
+import { ImportScreen } from '../screens/ImportScreen';
 import { UserCommitment, Goal } from '../types';
 import { ruleEngine } from '../services/ruleEngine';
 import { countdownService } from '../services/countdown';
@@ -29,6 +36,13 @@ export type RootStackParamList = {
     goals: Goal[];
   };
   Countdown: undefined;
+  Profile: undefined;
+  AddGoals: undefined;
+  Settings: undefined;
+  About: undefined;
+  EditGoal: { goalId: string };
+  Export: undefined;
+  Import: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -148,6 +162,13 @@ export const AppNavigator: React.FC<AppNavigatorProps> = ({ initialRoute }) => {
         <Stack.Screen name="Countdown">
           {() => <CountdownScreen />}
         </Stack.Screen>
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="AddGoals" component={AddGoalsScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="About" component={AboutScreen} />
+        <Stack.Screen name="EditGoal" component={EditGoalScreen} />
+        <Stack.Screen name="Export" component={ExportScreen} />
+        <Stack.Screen name="Import" component={ImportScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

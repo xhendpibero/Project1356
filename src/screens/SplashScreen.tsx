@@ -27,7 +27,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, [onComplete, fadeAnim]);
 
   return (
     <View style={styles.container}>

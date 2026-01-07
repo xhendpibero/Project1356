@@ -3,7 +3,8 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, Linking } from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 import { notificationService } from '../services/notifications';
 
 interface PermissionsScreenProps {
@@ -15,19 +16,72 @@ export const PermissionsScreen: React.FC<PermissionsScreenProps> = ({ onComplete
 
   const handleRequestNotifications = async () => {
     try {
+      // Request notification permission
       const granted = await notificationService.requestPermissions();
-      if (granted) {
-        setNotificationsGranted(true);
-        notificationService.initialize();
-      } else {
+      
+      if (!granted) {
         Alert.alert(
           'Notifications Required',
           'Project 1356 relies on notifications to remind you of your countdown. Without them, reminders and countdown awareness will be degraded.',
           [{ text: 'OK' }]
         );
+        return;
       }
+
+      // For Android 12+ (API 31+), also request exact alarm permission
+      if (Platform.OS === 'android' && Platform.Version >= 31) {
+        try {
+          // SCHEDULE_EXACT_ALARM is not in PermissionsAndroid constants, use string directly
+          const exactAlarmGranted = await PermissionsAndroid.request(
+            'android.permission.SCHEDULE_EXACT_ALARM' as any,
+            {
+              title: 'Exact Alarm Permission',
+              message: 'Project 1356 needs exact alarm permission to schedule precise countdown reminders.',
+              buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            }
+          );
+
+          if (exactAlarmGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+            // If not granted, show info about manual settings
+            Alert.alert(
+              'Exact Alarm Permission',
+              'To receive precise countdown reminders, please enable "Allow setting alarms and reminders" in app settings.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Open Settings',
+                  onPress: () => {
+                    Linking.openSettings();
+                  },
+                },
+              ]
+            );
+          }
+        } catch (exactAlarmError) {
+          console.error('Failed to request exact alarm permission:', exactAlarmError);
+          // Continue anyway - notifications will still work, just not exact alarms
+        }
+      }
+
+      setNotificationsGranted(true);
+      notificationService.initialize();
     } catch (error) {
       console.error('Failed to request notifications:', error);
+      Alert.alert(
+        'Permission Error',
+        'An error occurred while requesting permissions. Please try again or grant permissions manually in settings.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Open Settings',
+            onPress: () => {
+              Linking.openSettings();
+            },
+          },
+        ]
+      );
     }
   };
 

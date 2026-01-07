@@ -16,7 +16,6 @@ function App() {
   const { isLoading, initialRoute } = useAppState();
 
   useEffect(() => {
-    // Initialize notification service on app start
     notificationService.initialize();
   }, []);
 

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { Goal } from '../types';
 
 interface GoalCardProps {
@@ -16,18 +16,19 @@ const GOAL_ICONS = ['🎯', '🌟', '💎', '🔥', '⚡', '🌱', '🚀', '💫
 
 export const GoalCard: React.FC<GoalCardProps> = ({ goal, index }) => {
   const icon = goal.icon || GOAL_ICONS[index % GOAL_ICONS.length];
-  const displayTitle = goal.locked ? 'Locked Goal' : goal.title;
-  const maskedTitle = goal.locked
-    ? goal.title
-        .split('')
-        .map((char, i) => (i % 3 === 0 ? char : '•'))
-        .join('')
-    : goal.title;
+  // For locked goals, always show placeholder "Goal N (locked)"
+  const displayTitle = goal.locked
+    ? `Goal ${index + 1} (locked)`
+    : goal.title || `Goal ${index + 1}`;
 
   return (
     <View style={styles.card}>
       <View style={styles.iconContainer}>
-        <Text style={styles.icon}>{icon}</Text>
+        {goal.imageUrl ? (
+          <Image source={{ uri: goal.imageUrl }} style={styles.image} />
+        ) : (
+          <Text style={styles.icon}>{icon}</Text>
+        )}
         {goal.locked && (
           <View style={styles.lockBadge}>
             <Text style={styles.lockBadgeText}>🔒</Text>
@@ -36,7 +37,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, index }) => {
       </View>
       
       <Text style={styles.title} numberOfLines={2}>
-        {goal.locked ? maskedTitle : displayTitle}
+        {displayTitle}
       </Text>
       
       {!goal.locked && goal.detail && (
@@ -70,6 +71,12 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 32,
+  },
+  image: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    resizeMode: 'cover',
   },
   lockBadge: {
     position: 'absolute',

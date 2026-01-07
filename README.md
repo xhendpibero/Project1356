@@ -77,4 +77,4 @@ This project is free and open source.
 
 ## Credits
 
-Inspired by ArminMehdiz.
+Inspired by ArminMehdiz and the philosophy of shared deadlines and hidden goals.

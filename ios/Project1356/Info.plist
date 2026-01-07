@@ -36,6 +36,10 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Project 1356 needs access to your photo library to add images to your goals.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Project 1356 needs access to save images for your goals.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

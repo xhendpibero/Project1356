@@ -4,12 +4,14 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppState, UserCommitment, OnboardingState } from '../types';
+import { AppState, UserCommitment, OnboardingState, UserProfile, NotificationSettings } from '../types';
 
 const STORAGE_KEYS = {
   APP_STATE: '@project1356:app_state',
   COMMITMENT: '@project1356:commitment',
   ONBOARDING: '@project1356:onboarding',
+  PROFILE: '@project1356:profile',
+  NOTIFICATION_SETTINGS: '@project1356:notification_settings',
 } as const;
 
 class StorageService {
@@ -99,6 +101,56 @@ class StorageService {
   }
 
   /**
+   * Save user profile
+   */
+  async saveProfile(profile: UserProfile): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile));
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Load user profile
+   */
+  async loadProfile(): Promise<UserProfile | null> {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.PROFILE);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error('Failed to load profile:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Save notification settings
+   */
+  async saveNotificationSettings(settings: NotificationSettings): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.NOTIFICATION_SETTINGS, JSON.stringify(settings));
+    } catch (error) {
+      console.error('Failed to save notification settings:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Load notification settings
+   */
+  async loadNotificationSettings(): Promise<NotificationSettings | null> {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.NOTIFICATION_SETTINGS);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error('Failed to load notification settings:', error);
+      return null;
+    }
+  }
+
+  /**
    * Clear all data (for testing/reset)
    */
   async clearAll(): Promise<void> {
@@ -107,6 +159,8 @@ class StorageService {
         STORAGE_KEYS.APP_STATE,
         STORAGE_KEYS.COMMITMENT,
         STORAGE_KEYS.ONBOARDING,
+        STORAGE_KEYS.PROFILE,
+        STORAGE_KEYS.NOTIFICATION_SETTINGS,
       ]);
     } catch (error) {
       console.error('Failed to clear storage:', error);

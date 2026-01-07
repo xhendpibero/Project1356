@@ -14,12 +14,14 @@ export interface Goal {
   detail: string;
   locked: boolean;
   icon?: string;
+  imageUrl?: string;
+  customDays?: number;
 }
 
 export interface Countdown {
-  startDate: number; // Unix timestamp (milliseconds)
+  startDate: number;
   durationDays: number;
-  endDate: number; // Calculated end date
+  endDate: number;
 }
 
 export interface UserCommitment {
@@ -42,3 +44,14 @@ export interface OnboardingState {
   hasGrantedPhotoAccess: boolean;
 }
 
+export interface UserProfile {
+  name: string;
+  age?: number;
+  country?: string;
+}
+
+export interface NotificationSettings {
+  frequency: 'daily' | 'weekly' | 'custom';
+  customDays?: number[];
+  enabled: boolean;
+}
